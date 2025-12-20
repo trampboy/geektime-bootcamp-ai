@@ -12,3 +12,6 @@
 
 ## Implementation plan
 按照 ./specs/w1/0001-specs.md 中的需求和设计文档，帮我生成实现计划，放在 ./specs/w1/0002-implementation-plan.md 文件中,输出为中文。
+
+## phased development
+按照 ./specs/w1/0002-implementation-plan.md 完整实现这个项目的 phase 1 代码。
