@@ -75,14 +75,19 @@ const TagSelector: React.FC<TagSelectorProps> = ({
           tags.map((tag: TagType) => (
             <div
               key={tag.id}
-              className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer transition-colors"
-              onClick={() => handleTagToggle(tag.id)}
+              className="flex items-center gap-2 p-2 rounded-md hover:bg-accent transition-colors"
             >
               <Checkbox
+                id={`tag-${tag.id}`}
                 checked={selectedTagIds.includes(tag.id)}
                 onCheckedChange={() => handleTagToggle(tag.id)}
               />
-              <Tag tag={tag} variant="outline" />
+              <label
+                htmlFor={`tag-${tag.id}`}
+                className="flex-1 cursor-pointer"
+              >
+                <Tag tag={tag} variant="outline" />
+              </label>
             </div>
           ))
         )}
