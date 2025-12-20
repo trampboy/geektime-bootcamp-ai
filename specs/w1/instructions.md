@@ -15,3 +15,6 @@
 
 ## phased development
 按照 ./specs/w1/0002-implementation-plan.md 完整实现这个项目的 phase 1 代码。
+
+## seed sql
+添加一个 seed.sql 里面放 50个 meaningful 的 ticket 和几十个tags（包含platform tag，如 ios，project tag 如 viking，功能性 tag 如 autocomplete，等等）。要求 seed 文件正确可以通过 psql 执行。
