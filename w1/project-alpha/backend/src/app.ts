@@ -1,7 +1,12 @@
 // Project Alpha - Express 应用入口
-import express, { Application } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { logger } from './utils/logger';
+import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
+import ticketRoutes from './routes/ticket.routes';
+import tagRoutes from './routes/tag.routes';
+import { testConnection } from './config/database';
 
 // 加载环境变量
 dotenv.config();
@@ -17,7 +22,16 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 测试路由
+// 请求日志中间件
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  logger.info(`${req.method} ${req.path}`, {
+    query: req.query,
+    body: req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH' ? req.body : undefined
+  });
+  next();
+});
+
+// 健康检查路由
 app.get('/api/health', (_req, res) => {
   res.json({
     success: true,
@@ -26,39 +40,33 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
-// TODO: 在 Phase 2 中添加路由
-// app.use('/api/tickets', ticketRoutes);
-// app.use('/api/tags', tagRoutes);
+// API 路由
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/tags', tagRoutes);
 
 // 404 处理
-app.use((_req, res) => {
-  res.status(404).json({
-    success: false,
-    error: {
-      code: 'NOT_FOUND',
-      message: 'Route not found'
-    }
-  });
-});
+app.use(notFoundHandler);
 
-// 错误处理中间件
-app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error('Error:', err);
-  const statusCode = err.statusCode || 500;
-  res.status(statusCode).json({
-    success: false,
-    error: {
-      code: err.code || 'INTERNAL_SERVER_ERROR',
-      message: err.message || 'Internal server error'
-    }
-  });
-});
+// 错误处理中间件（必须在最后）
+app.use(errorHandler);
 
 // 启动服务器
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
-  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
-});
+const startServer = async () => {
+  try {
+    // 测试数据库连接
+    await testConnection();
+    
+    app.listen(PORT, () => {
+      logger.info(`🚀 Server is running on http://localhost:${PORT}`);
+      logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+    });
+  } catch (error) {
+    logger.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 export default app;
