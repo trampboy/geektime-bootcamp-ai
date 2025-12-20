@@ -1,5 +1,5 @@
 // Project Alpha - Ticket Store
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef, useMemo, ReactNode } from 'react';
 import { Ticket, CreateTicketDto, UpdateTicketDto, TicketFilters, TicketStatus } from '../types';
 import ticketService from '../services/ticket.service';
 
@@ -8,7 +8,7 @@ interface TicketContextType {
   loading: boolean;
   error: string | null;
   filters: TicketFilters;
-  setFilters: (filters: TicketFilters) => void;
+  setFilters: (filters: TicketFilters | ((prev: TicketFilters) => TicketFilters)) => void;
   fetchTickets: () => Promise<void>;
   getTicketById: (id: number) => Promise<Ticket | null>;
   createTicket: (dto: CreateTicketDto) => Promise<Ticket>;
@@ -38,17 +38,34 @@ export const TicketProvider: React.FC<TicketProviderProps> = ({ children }) => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<TicketFilters>({
+  const [filters, setFiltersState] = useState<TicketFilters>({
     status: 'all',
     search: '',
     tags: []
   });
+  
+  // 使用 useRef 存储最新的 filters，避免 fetchTickets 依赖 filters 导致循环
+  const filtersRef = useRef<TicketFilters>(filters);
+  
+  // 更新 ref 当 filters 变化时
+  useEffect(() => {
+    filtersRef.current = filters;
+  }, [filters]);
 
+  // 稳定的 setFilters 函数
+  const setFilters = useCallback((newFilters: TicketFilters | ((prev: TicketFilters) => TicketFilters)) => {
+    setFiltersState((prev) => {
+      const updated = typeof newFilters === 'function' ? newFilters(prev) : newFilters;
+      return updated;
+    });
+  }, []);
+
+  // fetchTickets 不依赖 filters，而是使用 ref 获取最新值
   const fetchTickets = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await ticketService.getAllTickets(filters);
+      const data = await ticketService.getAllTickets(filtersRef.current);
       setTickets(data);
     } catch (err: any) {
       setError(err.message || '获取 Tickets 失败');
@@ -56,12 +73,16 @@ export const TicketProvider: React.FC<TicketProviderProps> = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, []);
 
-  // 当 filters 变化时自动重新获取数据
+  // 使用 JSON.stringify 来比较 filters 的实际值是否变化，避免引用变化导致循环
+  const filtersKey = useMemo(() => JSON.stringify(filters), [filters]);
+
+  // 当 filters 实际值变化时才重新获取数据
   useEffect(() => {
     fetchTickets();
-  }, [fetchTickets]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtersKey]); // 只依赖 filtersKey，不依赖 fetchTickets
 
   const getTicketById = useCallback(async (id: number): Promise<Ticket | null> => {
     try {

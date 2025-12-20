@@ -20,16 +20,11 @@ import {
 } from './components/ui/dialog'
 
 function App() {
-  const { tickets, loading, filters, setFilters, fetchTickets, deleteTicket } = useTicketStore()
+  const { tickets, loading, filters, setFilters, deleteTicket } = useTicketStore()
   const { toast } = useToast()
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null)
   const [deletingTicket, setDeletingTicket] = useState<Ticket | null>(null)
-
-  useEffect(() => {
-    fetchTickets()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const handleCreateSuccess = () => {
     setIsCreateDialogOpen(false)

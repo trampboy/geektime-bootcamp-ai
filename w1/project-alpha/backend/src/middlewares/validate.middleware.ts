@@ -4,6 +4,7 @@ import { errorResponse } from '../utils/response';
 
 /**
  * 验证请求体中间件
+ * 用于验证请求体的格式和内容
  */
 export const validateBody = (schema: {
   title?: { required?: boolean; type?: string; maxLength?: number };
