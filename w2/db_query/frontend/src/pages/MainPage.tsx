@@ -2,6 +2,7 @@
  * Main page component - Combine DatabaseList, AddDatabaseForm, MetadataView
  */
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { DatabaseList } from '../components/DatabaseList';
 import { AddDatabaseForm } from '../components/AddDatabaseForm';
 import { MetadataView } from '../components/MetadataView';
@@ -59,7 +60,25 @@ export function MainPage(): JSX.Element {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Database Query Tool</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">Database Query Tool</h1>
+          <div className="flex gap-4">
+            {selectedDatabase && (
+              <Link
+                to={`/query/${encodeURIComponent(selectedDatabase)}`}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                SQL 查询
+              </Link>
+            )}
+            <Link
+              to="/query"
+              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              查询页面
+            </Link>
+          </div>
+        </div>
 
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">

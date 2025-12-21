@@ -1,6 +1,7 @@
 /**
  * MetadataView component - Display tables and views metadata
  */
+import { Link } from 'react-router-dom';
 import type { DatabaseMetadata, TableMetadata, ColumnMetadata } from '../types/api-types';
 
 interface MetadataViewProps {
@@ -76,8 +77,16 @@ export function MetadataView({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Metadata: {metadata.name}</h2>
-        <div className="text-sm text-gray-500">
-          Updated: {new Date(metadata.updatedAt).toLocaleString()}
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-gray-500">
+            Updated: {new Date(metadata.updatedAt).toLocaleString()}
+          </div>
+          <Link
+            to={`/query/${encodeURIComponent(metadata.name)}`}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          >
+            执行 SQL 查询
+          </Link>
         </div>
       </div>
 

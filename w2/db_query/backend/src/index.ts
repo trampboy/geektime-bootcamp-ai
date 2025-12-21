@@ -6,6 +6,10 @@ import {
   addOrUpdateDatabase,
   getDatabaseMetadata,
 } from './api/databases.controller';
+import {
+  executeQuery,
+  executeNaturalLanguageQuery,
+} from './api/queries.controller';
 import { initializeDatabase } from './db/init';
 
 // Initialize database
@@ -27,6 +31,8 @@ app.get('/health', (_req: Request, res: Response) => {
 app.get('/api/v1/dbs', listDatabases);
 app.put('/api/v1/dbs/:name', addOrUpdateDatabase);
 app.get('/api/v1/dbs/:name', getDatabaseMetadata);
+app.post('/api/v1/dbs/:name/query', executeQuery);
+app.post('/api/v1/dbs/:name/query/natural', executeNaturalLanguageQuery);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

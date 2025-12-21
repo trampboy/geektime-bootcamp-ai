@@ -90,25 +90,25 @@
 
 #### Backend - SQL Validation & Execution
 
-- [ ] T030 [P] [US2] Create SQL parser utility in w2/db_query/backend/src/utils/sql-parser.ts (parse SQL, validate SELECT only, check/add LIMIT clause using node-sql-parser)
-- [ ] T031 [US2] Implement SQL query executor service in w2/db_query/backend/src/services/query-executor.service.ts (execute SELECT queries, return results in camelCase format)
-- [ ] T032 [US2] Implement QueryRequest and QueryResult type definitions in w2/db_query/backend/src/models/query.ts (strict TypeScript types)
+- [X] T030 [P] [US2] Create SQL parser utility in w2/db_query/backend/src/utils/sql-parser.ts (parse SQL, validate SELECT only, check/add LIMIT clause using node-sql-parser)
+- [X] T031 [US2] Implement SQL query executor service in w2/db_query/backend/src/services/query-executor.service.ts (execute SELECT queries, return results in camelCase format)
+- [X] T032 [US2] Implement QueryRequest and QueryResult type definitions in w2/db_query/backend/src/models/query.ts (strict TypeScript types)
 
 #### Backend - API Endpoint
 
-- [ ] T033 [US2] Implement POST /api/v1/dbs/{name}/query endpoint in w2/db_query/backend/src/api/queries.controller.ts (validate SQL, execute query, return camelCase QueryResult)
+- [X] T033 [US2] Implement POST /api/v1/dbs/{name}/query endpoint in w2/db_query/backend/src/api/queries.controller.ts (validate SQL, execute query, return camelCase QueryResult)
 
 #### Frontend - Types & Services
 
-- [ ] T034 [P] [US2] Add QueryRequest and QueryResult types to w2/db_query/frontend/src/types/api.ts
-- [ ] T035 [P] [US2] Add executeQuery function to API client in w2/db_query/frontend/src/services/api.ts
+- [X] T034 [P] [US2] Add QueryRequest and QueryResult types to w2/db_query/frontend/src/types/api.ts
+- [X] T035 [P] [US2] Add executeQuery function to API client in w2/db_query/frontend/src/services/api.ts
 
 #### Frontend - Components
 
-- [ ] T036 [US2] Create SQL Editor component using Monaco Editor in w2/db_query/frontend/src/components/SqlEditor.tsx (SQL syntax highlighting, code editor)
-- [ ] T037 [US2] Create QueryResultTable component in w2/db_query/frontend/src/components/QueryResultTable.tsx (display query results as table)
-- [ ] T038 [US2] Create QueryPage component in w2/db_query/frontend/src/pages/QueryPage.tsx (combine SqlEditor and QueryResultTable)
-- [ ] T039 [US2] Add QueryPage route to App.tsx in w2/db_query/frontend/src/App.tsx
+- [X] T036 [US2] Create SQL Editor component using Monaco Editor in w2/db_query/frontend/src/components/SqlEditor.tsx (SQL syntax highlighting, code editor)
+- [X] T037 [US2] Create QueryResultTable component in w2/db_query/frontend/src/components/QueryResultTable.tsx (display query results as table)
+- [X] T038 [US2] Create QueryPage component in w2/db_query/frontend/src/pages/QueryPage.tsx (combine SqlEditor and QueryResultTable)
+- [X] T039 [US2] Add QueryPage route to App.tsx in w2/db_query/frontend/src/App.tsx
 
 **Checkpoint**: At this point, User Story 2 should be fully functional - users can execute SQL queries independently
 
@@ -116,23 +116,23 @@
 
 #### Backend - LLM Integration
 
-- [ ] T040 [P] [US3] Create OpenAI service wrapper in w2/db_query/backend/src/services/openai.service.ts (initialize OpenAI client, generate SQL from natural language)
-- [ ] T041 [US3] Implement natural language to SQL generator service in w2/db_query/backend/src/services/nl-to-sql.service.ts (build prompt with metadata context, call OpenAI, validate generated SQL)
-- [ ] T042 [US3] Add NaturalLanguageQueryRequest type definition in w2/db_query/backend/src/models/query.ts
+- [X] T040 [P] [US3] Create OpenAI service wrapper in w2/db_query/backend/src/services/openai.service.ts (initialize OpenAI client, generate SQL from natural language)
+- [X] T041 [US3] Implement natural language to SQL generator service in w2/db_query/backend/src/services/nl-to-sql.service.ts (build prompt with metadata context, call OpenAI, validate generated SQL)
+- [X] T042 [US3] Add NaturalLanguageQueryRequest type definition in w2/db_query/backend/src/models/query.ts
 
 #### Backend - API Endpoint
 
-- [ ] T043 [US3] Implement POST /api/v1/dbs/{name}/query/natural endpoint in w2/db_query/backend/src/api/queries.controller.ts (generate SQL, execute query, return result with generated SQL)
+- [X] T043 [US3] Implement POST /api/v1/dbs/{name}/query/natural endpoint in w2/db_query/backend/src/api/queries.controller.ts (generate SQL, execute query, return result with generated SQL)
 
 #### Frontend - Types & Services
 
-- [ ] T044 [P] [US3] Add NaturalLanguageQueryRequest type to w2/db_query/frontend/src/types/api.ts
-- [ ] T045 [P] [US3] Add executeNaturalLanguageQuery function to API client in w2/db_query/frontend/src/services/api.ts
+- [X] T044 [P] [US3] Add NaturalLanguageQueryRequest type to w2/db_query/frontend/src/types/api.ts
+- [X] T045 [P] [US3] Add executeNaturalLanguageQuery function to API client in w2/db_query/frontend/src/services/api.ts
 
 #### Frontend - Components
 
-- [ ] T046 [US3] Create NaturalLanguageInput component in w2/db_query/frontend/src/components/NaturalLanguageInput.tsx (text input for natural language query)
-- [ ] T047 [US3] Update QueryPage component in w2/db_query/frontend/src/pages/QueryPage.tsx (add natural language input option, display generated SQL)
+- [X] T046 [US3] Create NaturalLanguageInput component in w2/db_query/frontend/src/components/NaturalLanguageInput.tsx (text input for natural language query)
+- [X] T047 [US3] Update QueryPage component in w2/db_query/frontend/src/pages/QueryPage.tsx (add natural language input option, display generated SQL)
 
 **Checkpoint**: At this point, User Stories 1, 2, and 3 should all be independently functional
 

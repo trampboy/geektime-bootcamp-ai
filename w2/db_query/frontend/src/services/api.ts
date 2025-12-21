@@ -7,6 +7,10 @@ import type {
   DatabaseMetadata,
   DatabasesResponse,
   ErrorResponse,
+  QueryRequest,
+  QueryResult,
+  NaturalLanguageQueryRequest,
+  NaturalLanguageQueryResponse,
 } from '../types/api-types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
@@ -78,4 +82,36 @@ export async function getDatabaseMetadata(
   name: string
 ): Promise<DatabaseMetadata> {
   return request<DatabaseMetadata>(`/api/v1/dbs/${encodeURIComponent(name)}`);
+}
+
+/**
+ * Execute SQL query
+ */
+export async function executeQuery(
+  name: string,
+  queryRequest: QueryRequest
+): Promise<QueryResult> {
+  return request<QueryResult>(
+    `/api/v1/dbs/${encodeURIComponent(name)}/query`,
+    {
+      method: 'POST',
+      body: JSON.stringify(queryRequest),
+    }
+  );
+}
+
+/**
+ * Execute natural language query
+ */
+export async function executeNaturalLanguageQuery(
+  name: string,
+  queryRequest: NaturalLanguageQueryRequest
+): Promise<NaturalLanguageQueryResponse> {
+  return request<NaturalLanguageQueryResponse>(
+    `/api/v1/dbs/${encodeURIComponent(name)}/query/natural`,
+    {
+      method: 'POST',
+      body: JSON.stringify(queryRequest),
+    }
+  );
 }
