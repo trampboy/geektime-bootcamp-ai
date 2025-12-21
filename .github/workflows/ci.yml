@@ -1,0 +1,199 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, 'feature/**']
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # Backend 测试和 Lint
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: w2/db_query/backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: w2/db_query/backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./w2/db_query/backend/coverage/coverage-final.json
+          flags: backend
+          name: backend-coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Build
+        run: npm run build
+
+  # Frontend 测试和 Lint
+  frontend-test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: w2/db_query/frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: w2/db_query/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./w2/db_query/frontend/coverage/coverage-final.json
+          flags: frontend
+          name: frontend-coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Build
+        run: npm run build
+
+  # E2E 测试
+  e2e-test:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-test]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install backend dependencies
+        working-directory: w2/db_query/backend
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: w2/db_query/frontend
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Start Backend
+        working-directory: w2/db_query/backend
+        run: |
+          npm run build
+          npm start &
+          echo $! > backend.pid
+        env:
+          PORT: 3000
+          NODE_ENV: test
+
+      - name: Wait for Backend
+        run: |
+          timeout 30 bash -c 'until curl -f http://localhost:3000/health 2>/dev/null; do sleep 1; done' || true
+
+      - name: Start Frontend
+        working-directory: w2/db_query/frontend
+        run: |
+          npm run build
+          npm run preview &
+          echo $! > frontend.pid
+        env:
+          VITE_API_URL: http://localhost:3000
+
+      - name: Wait for Frontend
+        run: |
+          timeout 30 bash -c 'until curl -f http://localhost:4173 2>/dev/null; do sleep 1; done' || true
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          CI: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
+
+      - name: Stop servers
+        if: always()
+        run: |
+          if [ -f w2/db_query/backend/backend.pid ]; then
+            kill $(cat w2/db_query/backend/backend.pid) || true
+          fi
+          if [ -f w2/db_query/frontend/frontend.pid ]; then
+            kill $(cat w2/db_query/frontend/frontend.pid) || true
+          fi
+
+  # 构建状态总结
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-test, e2e-test]
+    if: success()
+    steps:
+      - name: CI Passed
+        run: echo "All CI checks passed successfully! ✅"
+
+  ci-failure:
+    name: CI Failure
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-test, e2e-test]
+    if: failure()
+    steps:
+      - name: CI Failed
+        run: |
+          echo "CI checks failed! ❌"
+          exit 1

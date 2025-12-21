@@ -1,0 +1,119 @@
+name: ✨ 功能请求
+description: 为这个项目提出一个新功能的想法
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你提出功能建议！请尽可能详细地描述你的想法。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题描述
+      description: 这个功能请求与某个问题相关吗？请描述。
+      placeholder: 当我尝试... 时，我遇到了困难，因为...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 期望的解决方案
+      description: 描述你希望实现的功能
+      placeholder: 我希望能够...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 替代方案
+      description: 描述你考虑过的任何替代解决方案或功能
+      placeholder: 我也考虑过...
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: 相关组件
+      description: 这个功能属于哪个组件？
+      options:
+        - Backend
+        - Frontend
+        - E2E 测试
+        - 文档
+        - CI/CD
+        - 其他
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 优先级
+      description: 这个功能对你有多重要？
+      options:
+        - 高 (阻碍主要工作流程)
+        - 中 (会显著改善体验)
+        - 低 (锦上添花)
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: 使用场景
+      description: 描述这个功能的具体使用场景
+      placeholder: |
+        作为一个 [角色]，
+        我想要 [功能]，
+        以便 [目标/收益]
+    validations:
+      required: true
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: 设计稿/原型
+      description: 如果有的话，可以添加设计稿、原型图或示意图
+      placeholder: 拖放图片到这里...
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: 验收标准
+      description: 如何判断这个功能已经正确实现？
+      placeholder: |
+        - [ ] 用户能够...
+        - [ ] 系统应该...
+        - [ ] 当...时，应该显示...
+
+  - type: textarea
+    id: technical-considerations
+    attributes:
+      label: 技术考虑
+      description: 有什么技术上的考虑或限制吗？
+      placeholder: 这可能需要... / 需要注意...
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 补充信息
+      description: 添加任何其他关于这个功能请求的上下文信息、截图或示例
+      placeholder: 任何其他有用的信息...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 确认项
+      description: 在提交前请确认以下事项
+      options:
+        - label: 我已经搜索过现有的 issues，确认这不是重复的功能请求
+          required: true
+        - label: 这个功能符合项目的目标和范围
+          required: true
+        - label: 我愿意协助实现这个功能（如果可能）
+          required: false

@@ -1,0 +1,157 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  # PR 标题检查
+  pr-title-check:
+    name: PR Title Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # 允许的类型
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+          # 允许的范围（可选）
+          scopes: |
+            backend
+            frontend
+            e2e
+            deps
+            ci
+          requireScope: false
+          # 允许多行主题
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            主题不应以大写字母开头。
+            正确格式: "feat: add new feature" 或 "fix(backend): resolve bug"
+
+  # PR 大小检查
+  pr-size-check:
+    name: PR Size Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR size
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const additions = pr.additions;
+            const deletions = pr.deletions;
+            const total = additions + deletions;
+
+            let label = '';
+            let message = '';
+
+            if (total < 100) {
+              label = 'size/XS';
+              message = '✅ 非常小的 PR，易于审查';
+            } else if (total < 300) {
+              label = 'size/S';
+              message = '✅ 小型 PR，易于审查';
+            } else if (total < 600) {
+              label = 'size/M';
+              message = '⚠️ 中等大小的 PR';
+            } else if (total < 1000) {
+              label = 'size/L';
+              message = '⚠️ 较大的 PR，建议拆分';
+            } else {
+              label = 'size/XL';
+              message = '❌ 非常大的 PR，强烈建议拆分成多个小 PR';
+            }
+
+            // 添加标签
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: [label]
+            });
+
+            // 添加评论
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: `📊 **PR 大小**: ${total} 行变更 (+${additions}, -${deletions})\n\n${message}`
+            });
+
+            console.log(`PR 大小: ${total} 行，标签: ${label}`);
+
+  # 检查是否有合并冲突
+  conflict-check:
+    name: Check Merge Conflicts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for merge conflicts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (pr.mergeable === false) {
+              core.setFailed('❌ PR 存在合并冲突，请先解决冲突');
+            } else if (pr.mergeable === true) {
+              console.log('✅ 无合并冲突');
+            } else {
+              console.log('⏳ 正在检查合并状态...');
+            }
+
+  # 自动标签
+  auto-label:
+    name: Auto Label PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Label based on changed files
+        uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
+
+  # PR 描述检查
+  pr-description-check:
+    name: PR Description Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR description
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || '';
+            
+            // 检查描述长度
+            if (body.length < 30) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: '⚠️ PR 描述过短，请添加更详细的说明，包括：\n\n- 🎯 改动目的\n- 📝 主要变更\n- ✅ 测试计划\n- 📸 截图（如适用）'
+              });
+              core.setFailed('PR 描述过短');
+            }
+            
+            // 检查是否包含 checklist
+            const hasChecklist = body.includes('- [') || body.includes('- [ ]');
+            if (!hasChecklist) {
+              console.log('⚠️ PR 描述中未包含 checklist');
+            }

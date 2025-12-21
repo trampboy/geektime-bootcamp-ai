@@ -1,0 +1,40 @@
+# CODEOWNERS 文件定义了代码审查的责任人
+# 详见: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# 默认所有文件的审查者
+* @trampboy
+
+# GitHub 配置和 CI/CD
+/.github/ @trampboy
+/.github/workflows/ @trampboy
+
+# Backend 代码
+/w2/db_query/backend/ @trampboy
+/w2/db_query/backend/src/api/ @trampboy
+/w2/db_query/backend/src/services/ @trampboy
+
+# Frontend 代码
+/w2/db_query/frontend/ @trampboy
+/w2/db_query/frontend/src/components/ @trampboy
+/w2/db_query/frontend/src/pages/ @trampboy
+
+# E2E 测试
+/e2e/ @trampboy
+/playwright.config.ts @trampboy
+
+# 文档
+*.md @trampboy
+/docs/ @trampboy
+
+# 配置文件
+package.json @trampboy
+*.config.js @trampboy
+*.config.ts @trampboy
+tsconfig.json @trampboy
+.eslintrc.json @trampboy
+.prettierrc.json @trampboy
+
+# 依赖配置
+package-lock.json @trampboy
+/w2/db_query/backend/package.json @trampboy
+/w2/db_query/frontend/package.json @trampboy

@@ -1,0 +1,33 @@
+# 自动分配 PR 审查者配置
+# 当创建新 PR 时，自动分配审查者
+
+# 添加审查者到 PR
+addReviewers: true
+
+# 添加分配者到 PR
+addAssignees: false
+
+# 审查者列表
+reviewers:
+  - trampboy
+
+# 可选：根据文件路径分配特定审查者
+# filePathAssignments:
+#   - pattern: '**/*.ts'
+#     assignees:
+#       - trampboy
+#   - pattern: 'w2/db_query/backend/**'
+#     assignees:
+#       - trampboy
+#   - pattern: 'w2/db_query/frontend/**'
+#     assignees:
+#       - trampboy
+
+# 跳过关键词（如果 PR 标题包含这些词，则跳过自动分配）
+skipKeywords:
+  - wip
+  - WIP
+  - draft
+
+# 审查者数量
+numberOfReviewers: 1

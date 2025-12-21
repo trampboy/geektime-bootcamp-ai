@@ -1,0 +1,131 @@
+version: 2
+updates:
+  # 根目录依赖
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "trampboy"
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    # 版本更新策略
+    versioning-strategy: increase
+
+  # Backend 依赖
+  - package-ecosystem: "npm"
+    directory: "/w2/db_query/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "trampboy"
+    labels:
+      - "dependencies"
+      - "backend"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    versioning-strategy: increase
+    # 分组更新
+    groups:
+      production-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@types/*"
+          - "@typescript-eslint/*"
+          - "eslint*"
+          - "prettier"
+          - "jest"
+          - "ts-*"
+        dependency-type: "production"
+      development-dependencies:
+        patterns:
+          - "@types/*"
+          - "@typescript-eslint/*"
+          - "eslint*"
+          - "prettier"
+          - "jest"
+          - "ts-*"
+        dependency-type: "development"
+
+  # Frontend 依赖
+  - package-ecosystem: "npm"
+    directory: "/w2/db_query/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "trampboy"
+    labels:
+      - "dependencies"
+      - "frontend"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    versioning-strategy: increase
+    groups:
+      production-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@types/*"
+          - "@vitejs/*"
+          - "@vitest/*"
+          - "eslint*"
+          - "tailwind*"
+          - "postcss"
+          - "autoprefixer"
+          - "vite"
+          - "vitest"
+        dependency-type: "production"
+      development-dependencies:
+        patterns:
+          - "@types/*"
+          - "@vitejs/*"
+          - "@vitest/*"
+          - "eslint*"
+          - "tailwind*"
+          - "postcss"
+          - "autoprefixer"
+          - "vite"
+          - "vitest"
+        dependency-type: "development"
+
+  # GitHub Actions 依赖
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Shanghai"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "trampboy"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"

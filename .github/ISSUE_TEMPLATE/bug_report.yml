@@ -1,0 +1,127 @@
+name: 🐛 Bug 报告
+description: 报告一个 bug 以帮助我们改进
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你花时间填写这个 bug 报告！请尽可能详细地描述问题。
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug 描述
+      description: 请清晰、简洁地描述这个 bug
+      placeholder: 告诉我们发生了什么...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 复现步骤
+      description: 如何复现这个问题？
+      placeholder: |
+        1. 访问 '...'
+        2. 点击 '...'
+        3. 滚动到 '...'
+        4. 看到错误
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: 期望行为
+      description: 你期望发生什么？
+      placeholder: 描述你期望的正确行为...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: 实际行为
+      description: 实际上发生了什么？
+      placeholder: 描述实际发生的情况...
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图
+      description: 如果适用，添加截图以帮助解释你的问题
+      placeholder: 拖放图片到这里...
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: 影响组件
+      description: 这个 bug 影响哪个组件？
+      options:
+        - Backend
+        - Frontend
+        - E2E 测试
+        - 文档
+        - 其他
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 严重程度
+      description: 这个 bug 的严重程度如何？
+      options:
+        - 严重 (系统崩溃/数据丢失)
+        - 高 (主要功能无法使用)
+        - 中 (功能受限但有替代方案)
+        - 低 (轻微问题/UI 问题)
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境信息
+      description: 请提供相关的环境信息
+      value: |
+        - OS: [例如 macOS 13.0, Windows 11]
+        - 浏览器: [例如 Chrome 120, Firefox 121]
+        - Node.js 版本: [例如 20.10.0]
+        - 项目版本/分支: [例如 v1.0.0, main]
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志
+      description: 请粘贴任何相关的错误日志或控制台输出
+      render: shell
+      placeholder: |
+        粘贴错误日志...
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 补充信息
+      description: 添加任何其他关于这个问题的上下文信息
+      placeholder: 任何其他有用的信息...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 确认项
+      description: 在提交前请确认以下事项
+      options:
+        - label: 我已经搜索过现有的 issues，确认这不是重复报告
+          required: true
+        - label: 我已经提供了足够的信息来复现这个问题
+          required: true
+        - label: 我使用的是最新版本的代码
+          required: false

@@ -1,0 +1,101 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Install backend dependencies
+        working-directory: w2/db_query/backend
+        run: npm ci
+
+      - name: Build backend
+        working-directory: w2/db_query/backend
+        run: npm run build
+
+      - name: Install frontend dependencies
+        working-directory: w2/db_query/frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: w2/db_query/frontend
+        run: npm run build
+
+      - name: Create release archives
+        run: |
+          # 创建 backend 归档
+          cd w2/db_query/backend
+          tar -czf ../../../backend-${{ steps.get_version.outputs.VERSION }}.tar.gz \
+            dist package.json package-lock.json .env.example
+          cd ../../..
+          
+          # 创建 frontend 归档
+          cd w2/db_query/frontend
+          tar -czf ../../../frontend-${{ steps.get_version.outputs.VERSION }}.tar.gz dist
+          cd ../../..
+
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v4.3.1
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## 🚀 变更内容
+            
+            ${{ steps.changelog.outputs.changelog }}
+            
+            ## 📦 构建产物
+            
+            - `backend-${{ steps.get_version.outputs.VERSION }}.tar.gz` - Backend 构建文件
+            - `frontend-${{ steps.get_version.outputs.VERSION }}.tar.gz` - Frontend 构建文件
+            
+            ## 📝 安装说明
+            
+            ### Backend
+            ```bash
+            tar -xzf backend-${{ steps.get_version.outputs.VERSION }}.tar.gz
+            npm install --production
+            npm start
+            ```
+            
+            ### Frontend
+            ```bash
+            tar -xzf frontend-${{ steps.get_version.outputs.VERSION }}.tar.gz
+            # 将 dist 目录部署到 web 服务器
+            ```
+          files: |
+            backend-${{ steps.get_version.outputs.VERSION }}.tar.gz
+            frontend-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          draft: false
+          prerelease: ${{ contains(steps.get_version.outputs.VERSION, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

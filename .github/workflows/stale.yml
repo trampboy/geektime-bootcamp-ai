@@ -1,0 +1,51 @@
+name: Stale Issues and PRs
+
+on:
+  schedule:
+    # 每天凌晨 1 点运行
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark stale issues and PRs
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Issue 设置
+          stale-issue-message: |
+            👋 这个 issue 已经 30 天没有活动了。
+            如果这个问题仍然相关，请回复此评论。
+            否则，将在 7 天后自动关闭。
+          close-issue-message: |
+            🔒 由于长时间没有活动，此 issue 已自动关闭。
+            如需重新打开，请评论说明。
+          days-before-stale: 30
+          days-before-close: 7
+          stale-issue-label: 'stale'
+          exempt-issue-labels: 'pinned,security,bug,enhancement'
+          
+          # PR 设置
+          stale-pr-message: |
+            👋 这个 PR 已经 14 天没有活动了。
+            如果您还在继续工作，请更新此 PR。
+            否则，将在 7 天后自动关闭。
+          close-pr-message: |
+            🔒 由于长时间没有活动，此 PR 已自动关闭。
+            如需重新打开，请评论说明。
+          days-before-pr-stale: 14
+          days-before-pr-close: 7
+          stale-pr-label: 'stale'
+          exempt-pr-labels: 'pinned,security,work-in-progress'
+          
+          # 其他设置
+          operations-per-run: 100
+          remove-stale-when-updated: true
+          ascending: true
