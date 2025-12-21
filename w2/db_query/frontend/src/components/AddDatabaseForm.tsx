@@ -23,6 +23,13 @@ export function AddDatabaseForm({
     e.preventDefault();
     setError(null);
     setSuccess(false);
+
+    // Validate database name format
+    if (!/^[a-zA-Z0-9_-]+$/.test(name)) {
+      setError('Database name can only contain letters, numbers, underscore, and hyphen');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -61,7 +68,6 @@ export function AddDatabaseForm({
             placeholder="e.g., my-database"
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            pattern="[a-zA-Z0-9_-]+"
             title="Only letters, numbers, underscore, and hyphen allowed"
           />
         </div>

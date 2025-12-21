@@ -1,0 +1,15 @@
+{
+  "name": "geektime-bootcamp-ai",
+  "version": "1.0.0",
+  "description": "AI 编程实战课练习",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/mcp": "^0.0.53"
+  }
+}
