@@ -1,0 +1,78 @@
+# 自动标签配置
+
+# Backend 相关
+'backend':
+  - changed-files:
+    - any-glob-to-any-file: 'w2/db_query/backend/**/*'
+
+# Frontend 相关
+'frontend':
+  - changed-files:
+    - any-glob-to-any-file: 'w2/db_query/frontend/**/*'
+
+# E2E 测试
+'e2e':
+  - changed-files:
+    - any-glob-to-any-file: 'e2e/**/*'
+    - any-glob-to-any-file: 'playwright.config.ts'
+
+# 文档
+'documentation':
+  - changed-files:
+    - any-glob-to-any-file: '**/*.md'
+    - any-glob-to-any-file: 'docs/**/*'
+
+# 配置文件
+'configuration':
+  - changed-files:
+    - any-glob-to-any-file: '**/*.json'
+    - any-glob-to-any-file: '**/*.yml'
+    - any-glob-to-any-file: '**/*.yaml'
+    - any-glob-to-any-file: '**/*.config.*'
+    - any-glob-to-any-file: '.github/**/*'
+
+# 测试
+'tests':
+  - changed-files:
+    - any-glob-to-any-file: '**/__tests__/**/*'
+    - any-glob-to-any-file: '**/*.test.*'
+    - any-glob-to-any-file: '**/*.spec.*'
+
+# 依赖
+'dependencies':
+  - changed-files:
+    - any-glob-to-any-file: '**/package.json'
+    - any-glob-to-any-file: '**/package-lock.json'
+
+# TypeScript
+'typescript':
+  - changed-files:
+    - any-glob-to-any-file: '**/*.ts'
+    - any-glob-to-any-file: '**/*.tsx'
+    - any-glob-to-any-file: '**/tsconfig.json'
+
+# React
+'react':
+  - changed-files:
+    - any-glob-to-any-file: '**/*.tsx'
+    - any-glob-to-any-file: 'w2/db_query/frontend/**/*.jsx'
+
+# API
+'api':
+  - changed-files:
+    - any-glob-to-any-file: 'w2/db_query/backend/src/api/**/*'
+    - any-glob-to-any-file: '**/openapi.yaml'
+
+# Database
+'database':
+  - changed-files:
+    - any-glob-to-any-file: 'w2/db_query/backend/src/db/**/*'
+    - any-glob-to-any-file: 'w2/db_query/backend/src/services/*sqlite*'
+    - any-glob-to-any-file: 'w2/db_query/backend/src/services/*mysql*'
+
+# UI/Styles
+'ui':
+  - changed-files:
+    - any-glob-to-any-file: '**/*.css'
+    - any-glob-to-any-file: 'w2/db_query/frontend/src/components/**/*'
+    - any-glob-to-any-file: '**/tailwind.config.*'

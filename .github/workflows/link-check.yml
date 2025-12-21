@@ -1,0 +1,46 @@
+name: Link Check
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - '**/*.md'
+  pull_request:
+    paths:
+      - '**/*.md'
+  schedule:
+    # 每周日凌晨 3 点检查
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  link-check:
+    name: Check Markdown Links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check links in Markdown files
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          config-file: '.github/markdown-link-check-config.json'
+          folder-path: '.'
+          file-path: './README.md'
+          max-depth: -1
+
+      - name: Create issue if links are broken
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '📎 发现失效的文档链接',
+              body: `在文档中发现失效的链接。\n\n请查看 [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) 获取详细信息。`,
+              labels: ['documentation', 'bug', 'automated']
+            });
+            console.log(`Created issue #${issue.data.number}`);

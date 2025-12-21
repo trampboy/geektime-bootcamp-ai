@@ -1,0 +1,29 @@
+name: Dependency Review
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    name: Review Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # 失败阈值
+          fail-on-severity: moderate
+          # 允许的许可证
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD
+          # 拒绝的许可证
+          deny-licenses: GPL-2.0, GPL-3.0, LGPL-2.0, LGPL-3.0
+          # 显示依赖变更
+          comment-summary-in-pr: always

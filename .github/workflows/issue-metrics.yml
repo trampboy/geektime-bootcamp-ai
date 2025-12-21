@@ -1,0 +1,56 @@
+name: Monthly Issue Metrics
+
+on:
+  schedule:
+    # 每月 1 号凌晨运行
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  build:
+    name: Calculate Issue Metrics
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Get dates for last month
+        shell: bash
+        run: |
+          # 获取上个月的第一天和最后一天
+          first_day=$(date -d "last month" +%Y-%m-01)
+          last_day=$(date -d "$first_day +1 month -1 day" +%Y-%m-%d)
+          echo "FIRST_DAY=$first_day" >> $GITHUB_ENV
+          echo "LAST_DAY=$last_day" >> $GITHUB_ENV
+
+      - name: Calculate issue metrics
+        uses: github/issue-metrics@v2
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEARCH_QUERY: 'repo:${{ github.repository }} is:issue created:${{ env.FIRST_DAY }}..${{ env.LAST_DAY }} -reason:"not planned"'
+
+      - name: Calculate PR metrics
+        uses: github/issue-metrics@v2
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEARCH_QUERY: 'repo:${{ github.repository }} is:pr created:${{ env.FIRST_DAY }}..${{ env.LAST_DAY }} -is:draft'
+
+      - name: Create report issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const issueMetrics = fs.readFileSync('issue_metrics.md', 'utf8');
+            const prMetrics = fs.readFileSync('issue_metrics.md', 'utf8');
+            
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📊 ${process.env.FIRST_DAY.substring(0, 7)} 月度指标报告`,
+              body: `# 月度项目指标\n\n## Issue 指标\n\n${issueMetrics}\n\n## PR 指标\n\n${prMetrics}`,
+              labels: ['metrics', 'report']
+            });
+            
+            console.log(`Created metrics report: ${issue.data.html_url}`);

@@ -57,3 +57,12 @@ POST /api/v1/dbs/{name}/query/natural
   "prompt": "查询用户表的所有信息"
 }
 ```
+
+## e2e 测试
+
+
+## 提交 PR
+submit pr
+
+## 配置 github 仓库自动化构建和部署
+根据项目，帮我配置完善的 GitHub 仓库自动化设置
