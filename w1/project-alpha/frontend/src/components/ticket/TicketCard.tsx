@@ -1,5 +1,6 @@
 // Project Alpha - TicketCard Component
-import React from 'react';
+// 性能优化：使用 React.memo 避免不必要的重渲染
+import React, { useCallback, memo } from 'react';
 import { Ticket, TicketStatus } from '@/types';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,13 +17,20 @@ interface TicketCardProps {
   onStatusChange: (ticket: Ticket, status: TicketStatus) => void;
 }
 
-const TicketCard: React.FC<TicketCardProps> = ({
+const TicketCard: React.FC<TicketCardProps> = memo(({
   ticket,
   onEdit,
   onDelete,
   onStatusChange
 }) => {
   const isCompleted = ticket.status === TicketStatus.COMPLETED;
+  
+  // 性能优化：使用 useCallback 避免函数重新创建
+  const handleEdit = useCallback(() => onEdit(ticket), [onEdit, ticket]);
+  const handleDelete = useCallback(() => onDelete(ticket), [onDelete, ticket]);
+  const handleStatusToggle = useCallback(() => {
+    onStatusChange(ticket, isCompleted ? TicketStatus.PENDING : TicketStatus.COMPLETED);
+  }, [onStatusChange, ticket, isCompleted]);
 
   return (
     <Card className={cn('hover:shadow-md transition-shadow', isCompleted && 'opacity-75')}>
@@ -67,7 +75,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
-                onClick={() => onStatusChange(ticket, isCompleted ? TicketStatus.PENDING : TicketStatus.COMPLETED)}
+                onClick={handleStatusToggle}
                 title={isCompleted ? '标记为进行中' : '标记为已完成'}
               >
                 {isCompleted ? (
@@ -80,7 +88,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
-                onClick={() => onEdit(ticket)}
+                onClick={handleEdit}
                 title="编辑"
               >
                 <Edit className="h-4 w-4" />
@@ -89,7 +97,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-destructive hover:text-destructive"
-                onClick={() => onDelete(ticket)}
+                onClick={handleDelete}
                 title="删除"
               >
                 <Trash2 className="h-4 w-4" />
@@ -100,6 +108,8 @@ const TicketCard: React.FC<TicketCardProps> = ({
       </CardContent>
     </Card>
   );
-};
+});
+
+TicketCard.displayName = 'TicketCard';
 
 export default TicketCard;

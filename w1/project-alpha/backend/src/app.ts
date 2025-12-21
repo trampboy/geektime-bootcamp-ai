@@ -2,6 +2,8 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
 import { logger } from './utils/logger';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 import ticketRoutes from './routes/ticket.routes';
@@ -13,6 +15,19 @@ dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
+
+// 性能优化：启用 gzip 压缩
+app.use(compression() as any);
+
+// 安全：API 限流
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 分钟
+  max: 100, // 限制 100 个请求
+  message: '请求过于频繁，请稍后再试',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/', limiter as any);
 
 // 中间件
 app.use(cors({
@@ -67,6 +82,10 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// 只在非测试环境时自动启动服务器
+// 测试环境会通过 supertest 直接使用 app 实例，不需要启动 HTTP 服务器
+if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
+  startServer();
+}
 
 export default app;

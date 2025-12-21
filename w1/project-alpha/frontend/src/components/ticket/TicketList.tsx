@@ -1,5 +1,6 @@
 // Project Alpha - TicketList Component
-import React from 'react';
+// 性能优化：使用 React.memo 和 useCallback 优化渲染性能
+import React, { useCallback, memo } from 'react';
 import { Ticket, TicketStatus } from '@/types';
 import { useTicketStore } from '@/store/ticket.store';
 import TicketCard from './TicketCard';
@@ -14,16 +15,17 @@ interface TicketListProps {
   onDelete: (ticket: Ticket) => void;
 }
 
-const TicketList: React.FC<TicketListProps> = ({ tickets, loading, onEdit, onDelete }) => {
+const TicketList: React.FC<TicketListProps> = memo(({ tickets, loading, onEdit, onDelete }) => {
   const { updateTicketStatus } = useTicketStore();
 
-  const handleStatusChange = async (ticket: Ticket, status: TicketStatus) => {
+  // 性能优化：使用 useCallback 避免函数重新创建
+  const handleStatusChange = useCallback(async (ticket: Ticket, status: TicketStatus) => {
     try {
       await updateTicketStatus(ticket.id, status);
     } catch (error) {
       console.error('Failed to update ticket status:', error);
     }
-  };
+  }, [updateTicketStatus]);
 
   if (loading) {
     return (
@@ -53,6 +55,7 @@ const TicketList: React.FC<TicketListProps> = ({ tickets, loading, onEdit, onDel
     );
   }
 
+  // 性能优化：使用响应式网格布局，自动适应不同屏幕大小
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {tickets.map((ticket) => (
@@ -66,6 +69,8 @@ const TicketList: React.FC<TicketListProps> = ({ tickets, loading, onEdit, onDel
       ))}
     </div>
   );
-};
+});
+
+TicketList.displayName = 'TicketList';
 
 export default TicketList;

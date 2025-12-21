@@ -1,14 +1,22 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+*.lcov
+
+# Production
+dist/
+build/
 
 # Environment variables
 .env
 .env.local
-.env.production
-
-# Build output
-dist/
-dist-ssr/
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Logs
 logs/
@@ -16,23 +24,26 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
+.pnpm-debug.log*
 
-# OS files
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
 Thumbs.db
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Database
+*.sql.gz
+backups/
 
-# Testing
-coverage/
-.nyc_output/
-
-# Misc
-*.local
+# PM2
+.pm2/
