@@ -17,15 +17,15 @@
 
 **Note**: Per Constitution, all code MUST use TypeScript with strict type annotations. All JSON responses MUST use camelCase.
 
-- [ ] T001 Create project structure at w2/db_query/ per implementation plan (backend/, frontend/, data/)
-- [ ] T002 Initialize backend TypeScript project with Express.js dependencies in w2/db_query/backend/ (tsconfig.json with strict mode)
-- [ ] T003 Initialize frontend TypeScript project with React + Vite dependencies in w2/db_query/frontend/ (tsconfig.json with strict mode)
-- [ ] T004 [P] Configure backend TypeScript, ESLint and Prettier in w2/db_query/backend/
-- [ ] T005 [P] Configure frontend TypeScript, ESLint and Prettier in w2/db_query/frontend/
-- [ ] T006 [P] Install backend dependencies: express, mysql2, better-sqlite3, node-sql-parser, openai, cors in w2/db_query/backend/
-- [ ] T007 [P] Install frontend dependencies: react, react-dom, vite, tailwindcss, @monaco-editor/react, shadcn/ui in w2/db_query/frontend/
-- [ ] T008 Create data directory structure w2/db_query/data/ for SQLite database storage
-- [ ] T009 Setup environment configuration for OPENAI_API_KEY in w2/db_query/backend/.env.example
+- [X] T001 Create project structure at w2/db_query/ per implementation plan (backend/, frontend/, data/)
+- [X] T002 Initialize backend TypeScript project with Express.js dependencies in w2/db_query/backend/ (tsconfig.json with strict mode)
+- [X] T003 Initialize frontend TypeScript project with React + Vite dependencies in w2/db_query/frontend/ (tsconfig.json with strict mode)
+- [X] T004 [P] Configure backend TypeScript, ESLint and Prettier in w2/db_query/backend/
+- [X] T005 [P] Configure frontend TypeScript, ESLint and Prettier in w2/db_query/frontend/
+- [X] T006 [P] Install backend dependencies: express, mysql2, better-sqlite3, node-sql-parser, openai, cors in w2/db_query/backend/
+- [X] T007 [P] Install frontend dependencies: react, react-dom, vite, tailwindcss, @monaco-editor/react, shadcn/ui in w2/db_query/frontend/
+- [X] T008 Create data directory structure w2/db_query/data/ for SQLite database storage
+- [X] T009 Setup environment configuration for OPENAI_API_KEY in w2/db_query/backend/.env.example
 
 ---
 
