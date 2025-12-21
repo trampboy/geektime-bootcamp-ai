@@ -10,7 +10,7 @@
 - 不需要认证系统，任何用户都可以使用
 
 ## 基本思路
-
+### specify
 这是一个数据库查询工具，用户可以添加一个 db url，系统会连接到本地的 mysql 数据库，获取到数据库的 metadata，然后将数据库中的 table 和 view 的信息展示给用户，然后用户可以自己输入 sql 查询，也可以通过自然语言来生成 sql 查询
 
 基本思想:
@@ -21,6 +21,8 @@
     - 如果查询不包含 limit 子句，则默认添加 limit 1000 子句。
 - 输出格式是 json，前端将其组织成表格，并显示出来。
 
+
+### plan
 后端使用 Node.js + Express.js + TypeScript + openai sdk 进行开发。
 前端使用 React + TypeScript + Vite + Tailwind CSS + Shadcn/ui 进行开发。sql editor 使用 monaco editor 实现。
 

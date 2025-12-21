@@ -1,0 +1,420 @@
+openapi: 3.0.3
+info:
+  title: 数据库查询工具 API
+  description: 提供MySQL数据库连接管理、元数据查询、SQL查询执行和自然语言SQL生成功能
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: 本地开发服务器
+
+paths:
+  /api/v1/dbs:
+    get:
+      summary: 获取所有已存储的数据库
+      description: 返回系统中所有已保存的数据库连接列表
+      operationId: listDatabases
+      tags:
+        - Databases
+      responses:
+        '200':
+          description: 成功返回数据库列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  databases:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DatabaseInfo'
+        '500':
+          description: 服务器错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/dbs/{name}:
+    get:
+      summary: 获取数据库元数据
+      description: 返回指定数据库的表和视图元数据信息
+      operationId: getDatabaseMetadata
+      tags:
+        - Databases
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 数据库标识名称
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+      responses:
+        '200':
+          description: 成功返回数据库元数据
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseMetadata'
+        '404':
+          description: 数据库不存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 服务器错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: 添加或更新数据库连接
+      description: 添加新的数据库连接，如果已存在则更新。系统会自动连接数据库并获取元数据。
+      operationId: addOrUpdateDatabase
+      tags:
+        - Databases
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 数据库标识名称
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatabaseConnection'
+      responses:
+        '200':
+          description: 成功添加或更新数据库连接
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseInfo'
+        '400':
+          description: 请求参数错误（连接字符串格式错误、连接失败等）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 服务器错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/dbs/{name}/query:
+    post:
+      summary: 执行SQL查询
+      description: 执行指定的SQL查询语句。仅允许SELECT语句，系统会自动验证语法并添加LIMIT子句（如未指定）。
+      operationId: executeQuery
+      tags:
+        - Queries
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 数据库标识名称
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        '200':
+          description: 成功执行查询并返回结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResult'
+        '400':
+          description: 请求错误（SQL语法错误、非SELECT语句等）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 数据库不存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 服务器错误或查询执行失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/dbs/{name}/query/natural:
+    post:
+      summary: 自然语言生成SQL查询
+      description: 根据自然语言描述生成SQL查询并执行。系统会使用数据库元数据作为上下文。
+      operationId: executeNaturalLanguageQuery
+      tags:
+        - Queries
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: 数据库标识名称
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NaturalLanguageQueryRequest'
+      responses:
+        '200':
+          description: 成功生成SQL并执行查询
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sql:
+                    type: string
+                    description: 生成的SQL查询语句
+                  result:
+                    $ref: '#/components/schemas/QueryResult'
+        '400':
+          description: 请求错误（无法生成SQL、生成的SQL无效等）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 数据库不存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 服务器错误（LLM API错误、查询执行失败等）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    DatabaseConnection:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          description: MySQL连接字符串，格式为 mysql://user:password@host:port/database
+          example: mysql://root:123456@localhost:3306/test
+      additionalProperties: false
+
+    DatabaseInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 数据库标识名称
+          example: my-database
+        url:
+          type: string
+          description: 连接字符串
+          example: mysql://root:***@localhost:3306/test
+        createdAt:
+          type: string
+          format: date-time
+          description: 创建时间（ISO 8601格式）
+          example: '2025-12-21T10:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新时间（ISO 8601格式）
+          example: '2025-12-21T10:00:00Z'
+      required:
+        - name
+        - url
+        - createdAt
+        - updatedAt
+
+    ColumnMetadata:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 列名
+          example: id
+        type:
+          type: string
+          description: 数据类型
+          example: int
+        nullable:
+          type: boolean
+          description: 是否可为空
+          example: false
+        default:
+          type: string
+          nullable: true
+          description: 默认值
+          example: null
+        key:
+          type: string
+          description: 键类型（PRI=主键, UNI=唯一, MUL=外键/索引, 空字符串=无）
+          example: PRI
+      required:
+        - name
+        - type
+        - nullable
+        - key
+
+    TableMetadata:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 表或视图名称
+          example: users
+        type:
+          type: string
+          enum:
+            - BASE TABLE
+            - VIEW
+          description: 类型
+          example: BASE TABLE
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnMetadata'
+          description: 列信息数组
+      required:
+        - name
+        - type
+        - columns
+
+    DatabaseMetadata:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 数据库标识名称
+          example: my-database
+        tables:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableMetadata'
+          description: 表列表
+        views:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableMetadata'
+          description: 视图列表
+        updatedAt:
+          type: string
+          format: date-time
+          description: 元数据更新时间
+          example: '2025-12-21T10:00:00Z'
+      required:
+        - name
+        - tables
+        - views
+        - updatedAt
+
+    QueryRequest:
+      type: object
+      required:
+        - sql
+      properties:
+        sql:
+          type: string
+          description: SQL查询语句（必须是SELECT语句）
+          example: SELECT * FROM users WHERE id = 1
+      additionalProperties: false
+
+    NaturalLanguageQueryRequest:
+      type: object
+      required:
+        - prompt
+      properties:
+        prompt:
+          type: string
+          description: 自然语言查询描述
+          example: 查询用户表的所有信息
+      additionalProperties: false
+
+    QueryResult:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            type: string
+          description: 列名数组
+          example:
+            - id
+            - username
+            - email
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: 数据行数组，每行为对象，key为列名
+          example:
+            - id: 1
+              username: john
+              email: john@example.com
+            - id: 2
+              username: jane
+              email: jane@example.com
+        rowCount:
+          type: integer
+          description: 返回行数
+          example: 2
+        executionTime:
+          type: number
+          description: 执行时间（毫秒）
+          example: 15.5
+      required:
+        - columns
+        - rows
+        - rowCount
+        - executionTime
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+              description: 错误消息
+              example: SQL syntax error
+            code:
+              type: string
+              description: 错误代码（可选）
+              enum:
+                - INVALID_CONNECTION
+                - INVALID_SQL
+                - NOT_SELECT
+                - QUERY_FAILED
+                - METADATA_FETCH_FAILED
+                - DATABASE_NOT_FOUND
+                - LLM_GENERATION_FAILED
+              example: INVALID_SQL
+          required:
+            - message
+      required:
+        - error
