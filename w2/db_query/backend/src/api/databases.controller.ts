@@ -7,7 +7,7 @@ import { MysqlService } from '../services/mysql.service';
 import { MetadataFetcherService } from '../services/metadata-fetcher.service';
 import { validateDatabaseName } from '../utils/connection-parser';
 import { AppError } from '../middleware/error-handler';
-import { DatabaseConnection, DatabaseInfo } from '../models/database';
+import { DatabaseConnection } from '../models/database';
 import { DatabaseMetadata } from '../models/metadata';
 
 const sqliteService = new SqliteService();

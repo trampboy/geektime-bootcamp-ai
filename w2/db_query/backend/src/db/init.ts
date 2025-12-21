@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 
 const DB_DIR = path.join(__dirname, '../../../data');
-const DB_PATH = path.join(DB_DIR, 'db_query.db');
+const DB_PATH = process.env.DB_PATH || path.join(DB_DIR, 'db_query.db');
 
 /**
  * Initialize SQLite database and create tables
@@ -59,8 +59,25 @@ export function initializeDatabase(): Database.Database {
 let dbInstance: Database.Database | null = null;
 
 export function getDatabase(): Database.Database {
+  // Reset instance if DB_PATH changed (for testing)
+  const currentPath = process.env.DB_PATH || path.join(DB_DIR, 'db_query.db');
+  if (dbInstance && dbInstance.name !== currentPath) {
+    dbInstance.close();
+    dbInstance = null;
+  }
+  
   if (!dbInstance) {
     dbInstance = initializeDatabase();
   }
   return dbInstance;
+}
+
+/**
+ * Reset database instance (for testing)
+ */
+export function resetDatabaseInstance(): void {
+  if (dbInstance) {
+    dbInstance.close();
+    dbInstance = null;
+  }
 }
