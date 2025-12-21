@@ -1,0 +1,46 @@
+/**
+ * Frontend TypeScript type definitions
+ */
+
+export interface DatabaseConnection {
+  url: string; // MySQL连接字符串，格式: mysql://user:password@host:port/database
+}
+
+export interface DatabaseInfo {
+  name: string; // 数据库标识名称
+  url: string; // 连接字符串（可脱敏显示）
+  createdAt: string; // ISO 8601格式
+  updatedAt: string; // ISO 8601格式
+}
+
+export interface ColumnMetadata {
+  name: string; // 列名
+  type: string; // 数据类型（如: int, varchar(255)）
+  nullable: boolean; // 是否可为空
+  default: string | null; // 默认值
+  key: string; // 键类型: PRI(主键), UNI(唯一), MUL(外键/索引), ""(无)
+}
+
+export interface TableMetadata {
+  name: string; // 表/视图名
+  type: 'BASE TABLE' | 'VIEW'; // 类型
+  columns: ColumnMetadata[]; // 列信息数组
+}
+
+export interface DatabaseMetadata {
+  name: string; // 数据库标识名称
+  tables: TableMetadata[]; // 表列表
+  views: TableMetadata[]; // 视图列表
+  updatedAt: string; // 元数据更新时间
+}
+
+export interface ErrorResponse {
+  error: {
+    message: string; // 错误消息
+    code?: string; // 错误代码（可选）
+  };
+}
+
+export interface DatabasesResponse {
+  databases: DatabaseInfo[];
+}

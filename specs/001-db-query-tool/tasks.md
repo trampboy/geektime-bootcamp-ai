@@ -39,38 +39,38 @@
 
 #### Backend - Database & Models
 
-- [ ] T010 [P] [US1] Create SQLite database initialization script in w2/db_query/backend/src/db/init.ts (create databases and metadata tables)
-- [ ] T011 [P] [US1] Create Database model type definitions in w2/db_query/backend/src/models/database.ts (DatabaseConnection, DatabaseInfo interfaces with strict types)
-- [ ] T012 [P] [US1] Create Metadata model type definitions in w2/db_query/backend/src/models/metadata.ts (DatabaseMetadata, TableMetadata, ColumnMetadata interfaces with strict types)
-- [ ] T013 [US1] Implement SQLite database service in w2/db_query/backend/src/services/sqlite.service.ts (CRUD operations for databases and metadata tables)
+- [X] T010 [P] [US1] Create SQLite database initialization script in w2/db_query/backend/src/db/init.ts (create databases and metadata tables)
+- [X] T011 [P] [US1] Create Database model type definitions in w2/db_query/backend/src/models/database.ts (DatabaseConnection, DatabaseInfo interfaces with strict types)
+- [X] T012 [P] [US1] Create Metadata model type definitions in w2/db_query/backend/src/models/metadata.ts (DatabaseMetadata, TableMetadata, ColumnMetadata interfaces with strict types)
+- [X] T013 [US1] Implement SQLite database service in w2/db_query/backend/src/services/sqlite.service.ts (CRUD operations for databases and metadata tables)
 
 #### Backend - MySQL Connection & Metadata
 
-- [ ] T014 [US1] Implement MySQL connection string parser utility in w2/db_query/backend/src/utils/connection-parser.ts (parse mysql:// URL format)
-- [ ] T015 [US1] Implement MySQL connection service in w2/db_query/backend/src/services/mysql.service.ts (connect, test connection, get metadata using INFORMATION_SCHEMA)
-- [ ] T016 [US1] Implement metadata fetcher service in w2/db_query/backend/src/services/metadata-fetcher.service.ts (fetch tables, views, columns from MySQL)
+- [X] T014 [US1] Implement MySQL connection string parser utility in w2/db_query/backend/src/utils/connection-parser.ts (parse mysql:// URL format)
+- [X] T015 [US1] Implement MySQL connection service in w2/db_query/backend/src/services/mysql.service.ts (connect, test connection, get metadata using INFORMATION_SCHEMA)
+- [X] T016 [US1] Implement metadata fetcher service in w2/db_query/backend/src/services/metadata-fetcher.service.ts (fetch tables, views, columns from MySQL)
 
 #### Backend - API Endpoints
 
-- [ ] T017 [US1] Implement GET /api/v1/dbs endpoint in w2/db_query/backend/src/api/databases.controller.ts (list all databases, return camelCase JSON)
-- [ ] T018 [US1] Implement PUT /api/v1/dbs/{name} endpoint in w2/db_query/backend/src/api/databases.controller.ts (add/update database, connect and fetch metadata, return camelCase JSON)
-- [ ] T019 [US1] Implement GET /api/v1/dbs/{name} endpoint in w2/db_query/backend/src/api/databases.controller.ts (get database metadata, return camelCase JSON)
-- [ ] T020 [US1] Setup Express routes and CORS middleware in w2/db_query/backend/src/app.ts (allow all origins, mount /api/v1/dbs routes)
-- [ ] T021 [US1] Implement error handling middleware in w2/db_query/backend/src/middleware/error-handler.ts (return camelCase ErrorResponse format)
+- [X] T017 [US1] Implement GET /api/v1/dbs endpoint in w2/db_query/backend/src/api/databases.controller.ts (list all databases, return camelCase JSON)
+- [X] T018 [US1] Implement PUT /api/v1/dbs/{name} endpoint in w2/db_query/backend/src/api/databases.controller.ts (add/update database, connect and fetch metadata, return camelCase JSON)
+- [X] T019 [US1] Implement GET /api/v1/dbs/{name} endpoint in w2/db_query/backend/src/api/databases.controller.ts (get database metadata, return camelCase JSON)
+- [X] T020 [US1] Setup Express routes and CORS middleware in w2/db_query/backend/src/app.ts (allow all origins, mount /api/v1/dbs routes)
+- [X] T021 [US1] Implement error handling middleware in w2/db_query/backend/src/middleware/error-handler.ts (return camelCase ErrorResponse format)
 
 #### Frontend - Types & Services
 
-- [ ] T022 [P] [US1] Create TypeScript type definitions in w2/db_query/frontend/src/types/api.ts (DatabaseInfo, DatabaseMetadata, ErrorResponse with strict types)
-- [ ] T023 [P] [US1] Create API client service in w2/db_query/frontend/src/services/api.ts (fetchDatabases, addDatabase, getDatabaseMetadata functions)
+- [X] T022 [P] [US1] Create TypeScript type definitions in w2/db_query/frontend/src/types/api.ts (DatabaseInfo, DatabaseMetadata, ErrorResponse with strict types)
+- [X] T023 [P] [US1] Create API client service in w2/db_query/frontend/src/services/api.ts (fetchDatabases, addDatabase, getDatabaseMetadata functions)
 
 #### Frontend - Components & Pages
 
-- [ ] T024 [US1] Create DatabaseList component in w2/db_query/frontend/src/components/DatabaseList.tsx (display list of databases)
-- [ ] T025 [US1] Create AddDatabaseForm component in w2/db_query/frontend/src/components/AddDatabaseForm.tsx (form to add database connection)
-- [ ] T026 [US1] Create MetadataView component in w2/db_query/frontend/src/components/MetadataView.tsx (display tables and views metadata)
-- [ ] T027 [US1] Create main page component in w2/db_query/frontend/src/pages/MainPage.tsx (combine DatabaseList, AddDatabaseForm, MetadataView)
-- [ ] T028 [US1] Setup React Router and main App component in w2/db_query/frontend/src/App.tsx (route to MainPage)
-- [ ] T029 [US1] Configure Tailwind CSS and Shadcn/ui in w2/db_query/frontend/
+- [X] T024 [US1] Create DatabaseList component in w2/db_query/frontend/src/components/DatabaseList.tsx (display list of databases)
+- [X] T025 [US1] Create AddDatabaseForm component in w2/db_query/frontend/src/components/AddDatabaseForm.tsx (form to add database connection)
+- [X] T026 [US1] Create MetadataView component in w2/db_query/frontend/src/components/MetadataView.tsx (display tables and views metadata)
+- [X] T027 [US1] Create main page component in w2/db_query/frontend/src/pages/MainPage.tsx (combine DatabaseList, AddDatabaseForm, MetadataView)
+- [X] T028 [US1] Setup React Router and main App component in w2/db_query/frontend/src/App.tsx (route to MainPage)
+- [X] T029 [US1] Configure Tailwind CSS and Shadcn/ui in w2/db_query/frontend/
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - users can add databases and view metadata independently
 
