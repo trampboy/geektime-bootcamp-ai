@@ -8,16 +8,19 @@ import App from './App.tsx'
 import './index.css'
 import { TicketProvider } from './store/ticket.store'
 import { TagProvider } from './store/tag.store'
+import { ThemeProvider } from './store/theme.store'
 import ErrorBoundary from './components/ui/error-boundary'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <TagProvider>
-        <TicketProvider>
-          <App />
-        </TicketProvider>
-      </TagProvider>
+      <ThemeProvider>
+        <TagProvider>
+          <TicketProvider>
+            <App />
+          </TicketProvider>
+        </TagProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   </React.StrictMode>,
 )
