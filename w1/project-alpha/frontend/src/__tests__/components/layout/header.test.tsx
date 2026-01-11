@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from '@/store/theme.store';
-import Header from '@/components/layout/header';
+import Header from '@/components/layout/Header';
 import { vi } from 'vitest';
 
 const renderWithTheme = (component: React.ReactElement) => {
