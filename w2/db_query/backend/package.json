@@ -16,12 +16,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "better-sqlite3": "^12.5.0",
+    "better-sqlite3": "^12.6.0",
     "cors": "^2.8.5",
     "express": "^5.2.1",
     "mysql2": "^3.16.0",
     "node-sql-parser": "^5.3.13",
-    "openai": "^6.15.0"
+    "openai": "^6.16.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",
